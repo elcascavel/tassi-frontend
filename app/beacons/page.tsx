@@ -34,7 +34,7 @@ export default function Page() {
       try {
         const [beaconsRes, statusesRes] = await Promise.all([
           fetch("/api/beacons"),
-          fetch("/api/GetStatus"),
+          fetch("/api/status"),
         ])
   
         const beaconsData = await beaconsRes.json()
