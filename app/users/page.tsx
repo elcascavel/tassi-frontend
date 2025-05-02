@@ -35,6 +35,8 @@ type User = {
   name: string
   picture: string
   last_login: string
+  created: string
+  role: string
   auth_id: string
 }
 
@@ -91,29 +93,56 @@ export default function Page() {
       header: "ID",
     },
     {
-      accessorKey: "picture",
-      header: "Avatar",
-      cell: ({ row }) => (
-        <img
-          src={row.original.picture}
-          alt="User Avatar"
-          className="w-8 h-8 rounded-full"
-        />
-      ),
+      accessorKey: "name",
+      header: "User",
+      cell: ({ row }) => {
+        const user = row.original
+        return (
+          <div className="flex items-center gap-2">
+            <img
+              src={user.picture}
+              alt={user.name}
+              className="w-8 h-8 rounded-full"
+            />
+            <span>{user.name}</span>
+          </div>
+        )
+      }
     },
     {
-      accessorKey: "name",
-      header: "Name",
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ row }) => {
+        const role = row.original.role
+        return (
+          <span className="capitalize">
+            {role === "admin" ? "Administrator" : role === "user" ? "User" : role}
+          </span>
+        )
+      }
     },
     {
       accessorKey: "last_login",
-      header: "Last Seen",
+      header: "Last Login",
       cell: ({ row }) => {
         const lastSeen = new Date(row.original.last_login)
         return (
           <span>
             {lastSeen.toLocaleDateString()}{" "}
             {lastSeen.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          </span>
+        )
+      },
+    },
+    {
+      accessorKey: "created",
+      header: "Registered On",
+      cell: ({ row }) => {
+        const created = new Date(row.original.created)
+        return (
+          <span>
+            {created.toLocaleDateString()}{" "}
+            {created.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </span>
         )
       },

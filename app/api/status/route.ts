@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const res = await fetch(`${process.env.API_URL}/GetStatus?code=${process.env.FUNCTION_KEY}`)
+    const res = await fetch(`${process.env.API_URL}/status?code=${process.env.FUNCTION_KEY}`)
 
     const text = await res.text() 
 
