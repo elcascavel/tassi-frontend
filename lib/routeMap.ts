@@ -3,20 +3,16 @@ import {
   IconDashboard,
   IconNavigation,
   IconHighlight,
-  IconChartBar,
-  IconReport,
-  IconUsers,
   IconSettings,
   IconHelp,
+  IconTicket,
 } from "@tabler/icons-react"
 
 export const routeMap: Record<string, string> = {
   "/": "Dashboard",
   "/navigation": "Navigation",
   "/beacons": "Beacons",
-  "/analytics": "Analytics",
-  "/reports": "Reports",
-  "/users": "Users",
+  "/support": "Support",
   "/settings": "Settings",
   "/help": "Get Help",
 }
@@ -38,19 +34,9 @@ export const navMain = [
     icon: IconHighlight,
   },
   {
-    title: routeMap["/analytics"],
-    url: "/analytics",
-    icon: IconChartBar,
-  },
-  {
-    title: routeMap["/reports"],
-    url: "/reports",
-    icon: IconReport,
-  },
-  {
-    title: routeMap["/users"],
-    url: "/users",
-    icon: IconUsers,
+    title: routeMap["/support"],
+    url: "/support",
+    icon: IconTicket,
   },
 ]
 
