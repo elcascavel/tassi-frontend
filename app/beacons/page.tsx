@@ -11,6 +11,23 @@ import { Button } from "@/components/ui/button"
 import { IconDotsVertical } from "@tabler/icons-react"
 import { Badge } from "@/components/ui/badge"
 import { getStatusVariant } from "@/lib/utils"
+import { PlusIcon } from "lucide-react"
+
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
+import { useUser } from "@auth0/nextjs-auth0/client"
+
 
 type Beacon = {
   id: number
@@ -24,34 +41,54 @@ type Status = {
   name: string
 }
 
+type BeaconType = {
+  id: number,
+  name: string,
+  enabled: boolean,
+}
+
 export default function Page() {
+  const { user, isLoading } = useUser()
   const [beacons, setBeacons] = useState<Beacon[]>([])
   const [statuses, setStatuses] = useState<Status[]>([])
+  const [types, setTypes]   = useState<BeaconType[]>([])
+
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [newBeaconName, setNewBeaconName] = useState("")
+  const [newStatusId, setNewStatusId] = useState<number | null>(null)
+  const [newDescription, setNewDescription] = useState("")
+  const [typeId, setTypeId] = useState<number | null>(null)
+
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [beaconsRes, statusesRes] = await Promise.all([
+        const [beaconsRes, statusesRes, typesRes] = await Promise.all([
           fetch("/api/beacons"),
           fetch("/api/status"),
+          fetch("/api/beacons/types"),
         ])
   
         const beaconsData = await beaconsRes.json()
         const statusesData = await statusesRes.json()
+        const typesData = await typesRes.json()
   
-        if (beaconsData.data && statusesData.data) {
+        if (beaconsData.data && statusesData.data && typesData.data) {
           setBeacons(beaconsData.data.beacons)
           setStatuses(statusesData.data.status)
+          setTypes(typesData.data.beacon_types)
         } else {
           console.warn("Unexpected response format.")
           setBeacons([])
           setStatuses([])
+          setTypes([])
         }
       } catch (err) {
         console.error("Failed to load data:", err)
         setBeacons([])
         setStatuses([])
+        setTypes([])
       } finally {
         setLoading(false)
       }
@@ -134,6 +171,115 @@ export default function Page() {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+  <div className="flex items-center justify-between px-4 lg:px-6">
+    <DialogTrigger asChild>
+      <Button variant="outline" size="sm">
+        <PlusIcon className="mr-2 h-4 w-4" />
+        <span className="hidden lg:inline">Add Beacon</span>
+      </Button>
+    </DialogTrigger>
+  </div>
+
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Add Beacon</DialogTitle>
+      <DialogDescription>
+        Fill in the information to create a new beacon.
+      </DialogDescription>
+    </DialogHeader>
+
+    <div className="grid gap-4 py-4">
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="name" className="text-right">Name</Label>
+        <Input
+          id="name"
+          value={newBeaconName}
+          onChange={(e) => setNewBeaconName(e.target.value)}
+          className="col-span-3"
+        />
+      </div>
+      <div className="grid grid-cols-4 items-start gap-4">
+  <Label htmlFor="description" className="text-right pt-2">Description</Label>
+  <textarea
+    id="description"
+    value={newDescription}
+    onChange={(e) => setNewDescription(e.target.value)}
+    className="col-span-3 border rounded px-3 py-2 h-24 resize-none"
+    placeholder="Enter beacon description..."
+  />
+</div>
+
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="status" className="text-right">Status</Label>
+        <select
+          id="status"
+          value={newStatusId ?? ""}
+          onChange={(e) => setNewStatusId(Number(e.target.value))}
+          className="col-span-3 border rounded px-3 py-2"
+        >
+          <option value="" disabled>Select status</option>
+          {statuses?.map(status => (
+            <option key={status.id} value={status.id}>
+              {status.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="grid grid-cols-4 items-center gap-4">
+  <Label className="text-right">Type</Label>
+  <select
+    value={typeId ?? ""}
+    onChange={e => setTypeId(Number(e.target.value))}
+    className="col-span-3 border rounded px-3 py-2"
+  >
+    <option value="" disabled>Select type</option>
+    {types?.map(t => (
+      <option key={t.id} value={t.id}>{t.name}</option>
+    ))}
+  </select>
+</div>
+    </div>
+
+    <DialogFooter>
+      <DialogClose asChild>
+        <Button type="button" variant="secondary">Cancel</Button>
+      </DialogClose>
+      <Button
+        type="button"
+        onClick={async () => {
+          if (!newBeaconName || !newStatusId || !user) return
+
+          const res = await fetch("/api/beacons", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: newBeaconName,
+              enabled: true,
+              description: newDescription,
+              point_id: 1,
+              type_id: typeId,
+              status_id: newStatusId,
+              created_by: user.sub,
+            }),
+          })
+
+          const data = await res.json()
+          if (res.ok) {
+            setBeacons(prev => [...prev, data.data.beacon])
+            setDialogOpen(false)
+            setNewBeaconName("")
+            setNewStatusId(null)
+          } else {
+            console.error("Failed to create beacon", data)
+          }
+        }}
+      >
+        Create
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
               {loading ? (
                 <p className="text-sm text-muted">Loading beacons...</p>
               ) : (

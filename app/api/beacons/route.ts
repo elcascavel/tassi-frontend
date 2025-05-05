@@ -17,3 +17,34 @@ export async function GET() {
     )
   }
 }
+
+export async function POST(req: Request) {
+  console.log("Creating beacon...")
+  try {
+    const body = await req.json()
+
+    const res = await fetch(`${process.env.API_URL}/beacons/create?code=${process.env.FUNCTION_KEY}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+
+    const text = await res.text()
+
+    const json = JSON.parse(text)
+
+    if (!res.ok) {
+      return NextResponse.json(json, { status: res.status })
+    }
+
+    return NextResponse.json(json)
+  } catch (error) {
+    console.error('Proxy error (POST):', error)
+    return NextResponse.json(
+      { message: 'Internal Server Error', error: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    )
+  }
+}
