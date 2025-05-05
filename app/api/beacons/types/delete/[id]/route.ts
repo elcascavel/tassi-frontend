@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const res = await fetch(
-    `${process.env.API_URL}/beacons/types/delete/${params.id}?code=${process.env.FUNCTION_KEY}`,
+    `${process.env.API_URL}/beacons/types/delete/${(await params).id}?code=${process.env.FUNCTION_KEY}`,
     { method: "DELETE" }
   );
   const txt = await res.text();

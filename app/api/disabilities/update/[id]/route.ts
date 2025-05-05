@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const body = await req.text();
   const res  = await fetch(
-    `${process.env.API_URL}/disability/update/${params.id}?code=${process.env.FUNCTION_KEY}`,
+    `${process.env.API_URL}/disability/update/${(await params).id}?code=${process.env.FUNCTION_KEY}`,
     { method: "PUT", headers: { "Content-Type": "application/json" }, body }
   );
   const txt = await res.text();
