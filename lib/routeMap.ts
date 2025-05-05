@@ -7,12 +7,14 @@ import {
   IconHelp,
   IconTicket,
   IconUsers,
+  IconCategory2,
 } from "@tabler/icons-react"
 
 export const routeMap: Record<string, string> = {
   "/": "Dashboard",
   "/navigation": "Navigation",
   "/beacons": "Beacons",
+  "/beacon-types": "Beacon Types",
   "/support": "Support",
   "/users": "Users",
   "/settings": "Settings",
@@ -34,6 +36,11 @@ export const navMain = [
     title: routeMap["/beacons"],
     url: "/beacons",
     icon: IconHighlight,
+  },
+  {
+    title: routeMap["/beacon-types"],
+    url: "/beacon-types",
+    icon: IconCategory2,
   },
   {
     title: routeMap["/support"],
