@@ -8,6 +8,7 @@ import {
   IconTicket,
   IconUsers,
   IconCategory2,
+  IconCategory,
 } from "@tabler/icons-react"
 
 export const routeMap: Record<string, string> = {
@@ -16,6 +17,7 @@ export const routeMap: Record<string, string> = {
   "/beacons": "Beacons",
   "/beacon-types": "Beacon Types",
   "/support": "Support",
+  "/support-categories": "Support Categories",
   "/users": "Users",
   "/settings": "Settings",
   "/help": "Get Help",
@@ -46,6 +48,11 @@ export const navMain = [
     title: routeMap["/support"],
     url: "/support",
     icon: IconTicket,
+  },
+  {
+    title: routeMap["/support-categories"],
+    url: "/support-categories",
+    icon: IconCategory,
   },
   {
     title: routeMap["/users"],
