@@ -48,7 +48,7 @@ type BeaconType = {
 }
 
 export default function Page() {
-  const { user, isLoading } = useUser()
+  const { user } = useUser()
   const [beacons, setBeacons] = useState<Beacon[]>([])
   const [statuses, setStatuses] = useState<Status[]>([])
   const [types, setTypes]   = useState<BeaconType[]>([])
