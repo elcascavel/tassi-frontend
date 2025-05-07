@@ -1,6 +1,5 @@
 "use client"
 
-import { useUser } from "@auth0/nextjs-auth0/client"
 import { useState } from "react"
 
 import { AppSidebar } from "@/components/app-sidebar"
@@ -21,9 +20,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { PlusIcon } from "lucide-react"
+import { useUserId } from "@/hooks/useUserId"
 
 export default function Page() {
-  const { user } = useUser()
+  const userId = useUserId()
   const [name, setName] = useState("")
   const [file, setFile] = useState<File | null>(null)
   const [enabled] = useState(true)
@@ -32,11 +32,11 @@ export default function Page() {
   const [loading, setLoading] = useState(false)
 
   const handleCreateMap = async () => {
-    if (!name || !file || !user) return
+    if (!name || !file || !userId) return
 
     const formData = new FormData()
     formData.append("name", name)
-    formData.append("user_id", user.sub || "")
+    formData.append("user_id", userId.toString())
     formData.append("enabled", String(enabled))
     formData.append("image", file)
 
@@ -50,7 +50,7 @@ export default function Page() {
       const text = await res.text()
       const data = text ? JSON.parse(text) : {}
   
-      if (!res.ok) throw new Error(data?.error || "Upload failed")
+      if (!res.ok) throw new Error(data?.error)
   
       setMapUrl(data.imageUrl || data.image || "/fallback.png")
       setDialogOpen(false)

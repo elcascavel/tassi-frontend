@@ -5,7 +5,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { DataTable } from "@/components/data-table"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { ColumnDef } from "@tanstack/react-table"
+import type { ColumnDef } from "@tanstack/react-table"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -36,13 +36,10 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { PlusIcon } from "lucide-react"
 import { IconDotsVertical } from "@tabler/icons-react"
-import { useUser } from "@auth0/nextjs-auth0/client"
 
 type BeaconType = { id: number; name: string; enabled: boolean }
 
 export default function Page() {
-  const { user } = useUser()
-
   const [types, setTypes] = useState<BeaconType[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -77,7 +74,7 @@ export default function Page() {
       const res = await fetch("/api/beacons/types/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, enabled, created_by: user?.sub }),
+        body: JSON.stringify({ name, enabled }),
       })
       const json = await res.json()
       if (res.ok) setTypes((p) => [...p, json.data])

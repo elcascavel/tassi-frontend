@@ -5,7 +5,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { DataTable } from "@/components/data-table"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { ColumnDef } from "@tanstack/react-table"
+import type { ColumnDef } from "@tanstack/react-table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { IconDotsVertical } from "@tabler/icons-react"
@@ -26,14 +26,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import { useUser } from "@auth0/nextjs-auth0/client"
-
+import { useUserId } from "@/hooks/useUserId"
 
 type Beacon = {
   id: number
   name: string
   statusId: number
-  updated: string
+  created: string
 }
 
 type Status = {
@@ -48,7 +47,7 @@ type BeaconType = {
 }
 
 export default function Page() {
-  const { user } = useUser()
+  const userId = useUserId()
   const [beacons, setBeacons] = useState<Beacon[]>([])
   const [statuses, setStatuses] = useState<Status[]>([])
   const [types, setTypes]   = useState<BeaconType[]>([])
@@ -121,11 +120,11 @@ export default function Page() {
       },
     },
     {
-      accessorKey: "updated",
-      header: "Updated",
+      accessorKey: "created",
+      header: "Created",
       cell: ({ row }) => {
-        const updated = new Date(row.original.updated)
-        return <span>{updated.toLocaleDateString()} {updated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+        const created = new Date(row.original.created)
+        return <span>{created.toLocaleDateString()} {created.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
       },
     },
     {
@@ -248,7 +247,7 @@ export default function Page() {
       <Button
         type="button"
         onClick={async () => {
-          if (!newBeaconName || !newStatusId || !user) return
+          if (!newBeaconName || !newStatusId || !userId) return
 
           const res = await fetch("/api/beacons", {
             method: "POST",
@@ -257,10 +256,10 @@ export default function Page() {
               name: newBeaconName,
               enabled: true,
               description: newDescription,
-              point_id: 1,
+              point_id: 2,
               type_id: typeId,
               status_id: newStatusId,
-              created_by: user.sub,
+              user_id: userId,
             }),
           })
 

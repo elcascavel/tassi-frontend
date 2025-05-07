@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
     const contentType = res.headers.get("content-type");
 
     if (contentType?.includes("application/json")) {
+      console.log(res);
       const json = await res.json();
       return NextResponse.json(json, { status: res.status });
     }
