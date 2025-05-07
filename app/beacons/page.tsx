@@ -31,7 +31,7 @@ import { useUserId } from "@/hooks/useUserId"
 type Beacon = {
   id: number
   name: string
-  statusId: number
+  status_id: number
   created: string
 }
 
@@ -106,10 +106,10 @@ export default function Page() {
       header: "Name",
     },
     {
-      accessorKey: "statusId",
+      accessorKey: "status_id",
       header: "Status",
       cell: ({ row }) => {
-        const status = statuses.find((s) => s.id === row.original.statusId)
+        const status = statuses.find((s) => s.id === row.original.status_id)
         const variant = getStatusVariant(status?.name ?? "unknown")
     
         return (
