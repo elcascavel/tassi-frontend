@@ -12,9 +12,11 @@ export async function POST(req: NextRequest) {
 
     const text = await res.text()
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let parsed: any
     try {
       parsed = text ? JSON.parse(text) : {}
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       console.error("Invalid JSON from backend:", text)
       return new NextResponse("Invalid backend response", { status: 502 })
