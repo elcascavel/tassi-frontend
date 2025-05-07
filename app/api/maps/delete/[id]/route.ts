@@ -5,7 +5,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const res = await fetch(
-    `${process.env.API_URL}/beacons/types/delete/${(await params).id}?code=${process.env.FUNCTION_KEY}`,
+    `${process.env.API_URL}/maps/delete/${(await params).id}?code=${process.env.FUNCTION_KEY}`,
     { method: "DELETE" }
   );
   const txt = await res.text();
