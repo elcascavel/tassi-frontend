@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from "next/server";
+
 export async function POST(req: NextRequest) {
   try {
     const url = `${process.env.API_URL}/status/create?code=${process.env.FUNCTION_KEY}`;

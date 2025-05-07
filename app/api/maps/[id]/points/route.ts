@@ -6,7 +6,7 @@ export async function GET(
 ) {
   try {
     const res = await fetch(
-      `${process.env.API_URL}/maps/${(await params).id}?code=${process.env.FUNCTION_KEY}`,
+      `${process.env.API_URL}/maps/${(await params).id}/points?code=${process.env.FUNCTION_KEY}`,
       {
         method: "GET",
       }
@@ -17,7 +17,7 @@ export async function GET(
 
     return NextResponse.json(json, { status: res.status })
   } catch (err) {
-    console.error("Error fetching map by ID:", err)
+    console.error("Error fetching points of map", err)
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

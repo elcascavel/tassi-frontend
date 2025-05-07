@@ -1,13 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
     const res = await fetch(`${process.env.API_URL}/beacons?code=${process.env.FUNCTION_KEY}`)
-
-    const text = await res.text() 
-
+    const text = await res.text()
     const json = JSON.parse(text)
-
     return NextResponse.json(json)
   } catch (error) {
     console.error('Proxy error:', error)
@@ -19,27 +17,33 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  console.log("Creating beacon...")
   try {
-    const body = await req.json()
+    const body = await req.text()
 
     const res = await fetch(`${process.env.API_URL}/beacons/create?code=${process.env.FUNCTION_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body),
+      body,
     })
 
     const text = await res.text()
 
-    const json = JSON.parse(text)
-
-    if (!res.ok) {
-      return NextResponse.json(json, { status: res.status })
+    let parsed: any
+    try {
+      parsed = JSON.parse(text)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      console.error("Failed to parse backend response:", text)
+      return new NextResponse("Invalid backend response", { status: 502 })
     }
 
-    return NextResponse.json(json)
+    if (!res.ok) {
+      return NextResponse.json(parsed, { status: res.status })
+    }
+
+    return NextResponse.json({ data: { beacon: parsed.data } }, { status: res.status })
   } catch (error) {
     console.error('Proxy error (POST):', error)
     return NextResponse.json(
