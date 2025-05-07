@@ -34,6 +34,7 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { IconDotsVertical } from "@tabler/icons-react"
 import { DataTable } from "@/components/data-table"
+import Link from "next/link"
 
 export default function Page() {
   const userId = useUserId()
@@ -115,7 +116,15 @@ export default function Page() {
 
   const mapColumns: ColumnDef<Map>[] = [
     { accessorKey: "id", header: "ID" },
-    { accessorKey: "name", header: "Name" },
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => (
+        <Link href={`/maps/${row.original.id}`} className="text-blue-600 hover:underline">
+          {row.original.name}
+        </Link>
+      ),
+    },
     { accessorKey: "enabled", header: "Enabled", cell: ({ row }) => (row.original.enabled ? "Yes" : "No") },
     {
       id: "actions",

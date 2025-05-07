@@ -1,7 +1,6 @@
 // lib/navigation.ts
 import {
   IconDashboard,
-  IconNavigation,
   IconHighlight,
   IconSettings,
   IconHelp,
@@ -12,11 +11,12 @@ import {
   IconDisabled2,
   IconStatusChange,
   IconPoint,
+  IconMap,
 } from "@tabler/icons-react"
 
 export const routeMap: Record<string, string> = {
   "/": "Dashboard",
-  "/navigation": "Navigation",
+  "/maps": "Maps",
   "/beacons": "Beacons",
   "/beacon-types": "Beacon Types",
   "/points": "Points",
@@ -36,9 +36,9 @@ export const navMain = [
     icon: IconDashboard,
   },
   {
-    title: routeMap["/navigation"],
-    url: "/navigation",
-    icon: IconNavigation,
+    title: routeMap["/maps"],
+    url: "/maps",
+    icon: IconMap,
   },
   {
     title: routeMap["/beacons"],
