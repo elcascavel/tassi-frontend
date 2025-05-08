@@ -72,7 +72,7 @@ export default function Page() {
 
   const handleDelete = async (userId: number) => {
     try {
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await fetch(`/api/users/delete/${userId}`, {
         method: "DELETE",
       })
 
