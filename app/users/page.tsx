@@ -72,7 +72,7 @@ export default function Page() {
 
   const handleDelete = async (userId: number) => {
     try {
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await fetch(`/api/users/delete/${userId}`, {
         method: "DELETE",
       })
 
@@ -162,9 +162,6 @@ export default function Page() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => console.log("Edit", row.original)}>
-                Edit
-              </DropdownMenuItem>
               <DropdownMenuItem
               className={isCurrentUser ? "text-muted-foreground cursor-not-allowed opacity-50" : "text-red-500"}
               onClick={() => {
