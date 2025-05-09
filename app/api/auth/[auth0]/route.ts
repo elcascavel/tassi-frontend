@@ -6,9 +6,9 @@ export const GET = handleAuth({
   callback: handleCallback({
     async afterCallback(_req: NextRequest, session: Session) {
       try {
-        const authId = session.user.sub;
+        const auth_id = session.user.sub;
         const name = session.user.name ?? '';
-        await registerUser(authId, name);
+        await registerUser(auth_id, name);
       } catch (err) {
         console.error('afterCallback error:', err);
       }

@@ -1,4 +1,4 @@
-export async function registerUser(authId: string, name: string) {
+export async function registerUser(auth_id: string, name: string) {
     const url = `${process.env.API_URL}/users/create?code=${process.env.FUNCTION_KEY}`;
   
     const res = await fetch(url, {
@@ -6,7 +6,7 @@ export async function registerUser(authId: string, name: string) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ authId, name }),
+      body: JSON.stringify({ auth_id, name }),
     });
 
     if (res.status === 400) {
