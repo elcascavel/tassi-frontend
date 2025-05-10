@@ -26,6 +26,7 @@ import { toast } from 'sonner';
 
 import { useUserId } from '@/hooks/useUserId';
 import { DataTableSkeleton } from '@/components/data-table-skeleton';
+import { IconTrash } from '@tabler/icons-react';
 
 type Beacon = {
   id: number;
@@ -172,6 +173,21 @@ export default function Page() {
     }
   };
 
+  const handleDelete = async (id: number) => {
+  const res = await fetch(`/api/beacons/delete/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (res.ok) {
+    setBeacons((prev) => prev.filter((b) => b.id !== id));
+    toast.success(`Beacon #${id} deleted.`);
+  } else {
+    console.error('Failed to delete beacon');
+    toast.error('Failed to delete beacon.');
+  }
+};
+
+
   const beaconColumns: ColumnDef<Beacon>[] = [
     { accessorKey: 'id', header: 'ID' },
     { accessorKey: 'name', header: 'Name' },
@@ -212,7 +228,15 @@ export default function Page() {
           >
             <PencilIcon className="w-4 h-4" />
           </Button>
-        </div>
+          <Button
+        onClick={() => handleDelete(row.original.id)}
+        variant="ghost"
+        size="icon"
+        aria-label="Delete"
+      >
+        <span className="text-red-500"><IconTrash className="w-4 h-4" /></span>
+      </Button>
+    </div>
       ),
     },
   ];
