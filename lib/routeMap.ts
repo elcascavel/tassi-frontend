@@ -2,8 +2,6 @@
 import {
   IconDashboard,
   IconHighlight,
-  IconSettings,
-  IconHelp,
   IconTicket,
   IconUsers,
   IconCategory2,
@@ -28,7 +26,6 @@ export const routeMap: Record<string, string> = {
   "/status": "Status",
   "/users": "Users",
   "/settings": "Settings",
-  "/help": "Get Help",
 }
 
 export const navMain = [
@@ -86,18 +83,5 @@ export const navMain = [
     title: routeMap["/users"],
     url: "/users",
     icon: IconUsers,
-  },
-]
-
-export const navSecondary = [
-  {
-    title: routeMap["/settings"],
-    url: "/settings",
-    icon: IconSettings,
-  },
-  {
-    title: routeMap["/help"],
-    url: "/help",
-    icon: IconHelp,
   },
 ]
