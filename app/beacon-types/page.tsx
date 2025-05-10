@@ -36,6 +36,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { PlusIcon } from "lucide-react"
 import { IconDotsVertical } from "@tabler/icons-react"
+import { DataTableSkeleton } from "@/components/data-table-skeleton"
 
 type BeaconType = { id: number; name: string; enabled: boolean }
 
@@ -160,11 +161,11 @@ export default function Page() {
               <span className="hidden lg:inline">Add Beacon Type</span>
             </Button>
 
-            {loading ? (
-              <p className="text-sm text-muted">Loading beacon types…</p>
-            ) : (
-              <DataTable data={types} columns={columns} />
-            )}
+          {loading ? (
+            <DataTableSkeleton columnCount={columns.length} />
+          ) : (
+            <DataTable data={types} columns={columns} />
+          )}
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogContent>

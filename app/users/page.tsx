@@ -29,6 +29,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { IconDotsVertical } from "@tabler/icons-react"
 import { useUser } from "@auth0/nextjs-auth0/client"
+import { DataTableSkeleton } from "@/components/data-table-skeleton"
 
 type User = {
   id: number
@@ -196,11 +197,11 @@ export default function Page() {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              {loading ? (
-                <p className="text-sm text-muted">Loading users...</p>
-              ) : (
-                <DataTable data={users} columns={userColumns} />
-              )}
+            {loading ? (
+              <DataTableSkeleton columnCount={userColumns.length} />
+            ) : (
+              <DataTable data={users} columns={userColumns} />
+            )}
             </div>
           </div>
         </div>

@@ -1,17 +1,17 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react"
-import { AppSidebar } from "@/components/app-sidebar"
-import { DataTable } from "@/components/data-table"
-import { SiteHeader } from "@/components/site-header"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { ColumnDef } from "@tanstack/react-table"
+import { useEffect, useState } from 'react';
+import { AppSidebar } from '@/components/app-sidebar';
+import { DataTable } from '@/components/data-table';
+import { SiteHeader } from '@/components/site-header';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { ColumnDef } from '@tanstack/react-table';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog"
+} from '@/components/ui/dialog';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -30,78 +30,92 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { PlusIcon } from "lucide-react"
-import { IconDotsVertical } from "@tabler/icons-react"
-import { useUser } from "@auth0/nextjs-auth0/client"
+} from '@/components/ui/alert-dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { PlusIcon } from 'lucide-react';
+import { IconDotsVertical } from '@tabler/icons-react';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { DataTableSkeleton } from '@/components/data-table-skeleton';
 
-type Disability = { id: number; name: string; severity: number; enabled: boolean }
+type Disability = {
+  id: number;
+  name: string;
+  severity: number;
+  enabled: boolean;
+};
 
 export default function Page() {
-  const { user } = useUser()
+  const { user } = useUser();
 
-  const [rows, setRows]       = useState<Disability[]>([])
-  const [loading, setLoading] = useState(true)
+  const [rows, setRows] = useState<Disability[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [dlg, setDlg]         = useState(false)
-  const [editing, setEdit]    = useState<Disability | null>(null)
-  const [name, setName]       = useState("")
-  const [sev, setSev]         = useState(0)
-  const [en, setEn]           = useState(true)
+  const [dlg, setDlg] = useState(false);
+  const [editing, setEdit] = useState<Disability | null>(null);
+  const [name, setName] = useState('');
+  const [sev, setSev] = useState(0);
+  const [en, setEn] = useState(true);
 
-  const [toDel, setDel]       = useState<Disability | null>(null)
+  const [toDel, setDel] = useState<Disability | null>(null);
 
   useEffect(() => {
-    ;(async () => {
-      const r = await fetch("/api/disabilities")
-      const j = await r.json()
-      setRows(j?.data?.disabilities ?? [])
-      setLoading(false)
-    })()
-  }, [])
+    (async () => {
+      const r = await fetch('/api/disabilities');
+      const j = await r.json();
+      setRows(j?.data?.disabilities ?? []);
+      setLoading(false);
+    })();
+  }, []);
 
   async function save() {
-    if (!name) return
+    if (!name) return;
     if (editing) {
       const r = await fetch(`/api/disabilities/update/${editing.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, severity: sev, enabled: en }),
-      })
-      const j = await r.json()
-      if (r.ok) setRows(p => p.map(d => (d.id === editing.id ? j.data : d)))
+      });
+      const j = await r.json();
+      if (r.ok)
+        setRows((p) => p.map((d) => (d.id === editing.id ? j.data : d)));
     } else {
-      const r = await fetch("/api/disabilities/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, severity: sev, enabled: en, created_by: user?.sub }),
-      })
-      const j = await r.json()
-      if (r.ok) setRows(p => [...p, j.data])
+      const r = await fetch('/api/disabilities/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          severity: sev,
+          enabled: en,
+          created_by: user?.sub,
+        }),
+      });
+      const j = await r.json();
+      if (r.ok) setRows((p) => [...p, j.data]);
     }
-    setDlg(false)
+    setDlg(false);
   }
 
   async function remove(id: number) {
-    const r = await fetch(`/api/disabilities/delete/${id}`, { method: "DELETE" })
-    if (r.ok) setRows(p => p.filter(d => d.id !== id))
+    const r = await fetch(`/api/disabilities/delete/${id}`, {
+      method: 'DELETE',
+    });
+    if (r.ok) setRows((p) => p.filter((d) => d.id !== id));
   }
 
   const cols: ColumnDef<Disability>[] = [
-    { accessorKey: "id", header: "ID" },
-    { accessorKey: "name", header: "Name" },
-    { accessorKey: "severity", header: "Severity" },
+    { accessorKey: 'id', header: 'ID' },
+    { accessorKey: 'name', header: 'Name' },
+    { accessorKey: 'severity', header: 'Severity' },
     {
-      accessorKey: "enabled",
-      header: "Enabled",
-      cell: ({ row }) => (row.original.enabled ? "Yes" : "No"),
+      accessorKey: 'enabled',
+      header: 'Enabled',
+      cell: ({ row }) => (row.original.enabled ? 'Yes' : 'No'),
     },
     {
-      id: "actions",
-      header: "",
+      id: 'actions',
+      header: '',
       cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -112,30 +126,33 @@ export default function Page() {
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               onClick={() => {
-                setEdit(row.original)
-                setName(row.original.name)
-                setSev(row.original.severity)
-                setEn(row.original.enabled)
-                setDlg(true)
+                setEdit(row.original);
+                setName(row.original.name);
+                setSev(row.original.severity);
+                setEn(row.original.enabled);
+                setDlg(true);
               }}
             >
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-500" onClick={() => setDel(row.original)}>
+            <DropdownMenuItem
+              className="text-red-500"
+              onClick={() => setDel(row.original)}
+            >
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),
     },
-  ]
+  ];
 
   return (
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "calc(var(--spacing)*72)",
-          "--header-height": "calc(var(--spacing)*12)",
+          '--sidebar-width': 'calc(var(--spacing)*72)',
+          '--header-height': 'calc(var(--spacing)*12)',
         } as React.CSSProperties
       }
     >
@@ -149,11 +166,11 @@ export default function Page() {
               size="sm"
               className="self-start ml-4 lg:ml-6"
               onClick={() => {
-                setEdit(null)
-                setName("")
-                setSev(0)
-                setEn(true)
-                setDlg(true)
+                setEdit(null);
+                setName('');
+                setSev(0);
+                setEn(true);
+                setDlg(true);
               }}
             >
               <PlusIcon className="mr-2 h-4 w-4" />
@@ -161,7 +178,7 @@ export default function Page() {
             </Button>
 
             {loading ? (
-              <p className="text-sm text-muted">Loading disabilities…</p>
+              <DataTableSkeleton columnCount={cols.length} />
             ) : (
               <DataTable data={rows} columns={cols} />
             )}
@@ -169,13 +186,19 @@ export default function Page() {
             <Dialog open={dlg} onOpenChange={setDlg}>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>{editing ? "Edit Disability" : "Add Disability"}</DialogTitle>
+                  <DialogTitle>
+                    {editing ? 'Edit Disability' : 'Add Disability'}
+                  </DialogTitle>
                   <DialogDescription>Fill in the fields.</DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label className="text-right">Name</Label>
-                    <Input value={name} onChange={e => setName(e.target.value)} className="col-span-3" />
+                    <Input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="col-span-3"
+                    />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label className="text-right">Severity</Label>
@@ -184,15 +207,15 @@ export default function Page() {
                       min={0}
                       max={10}
                       value={sev}
-                      onChange={e => setSev(Number(e.target.value))}
+                      onChange={(e) => setSev(Number(e.target.value))}
                       className="col-span-3"
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label className="text-right">Enabled</Label>
                     <select
-                      value={en ? "true" : "false"}
-                      onChange={e => setEn(e.target.value === "true")}
+                      value={en ? 'true' : 'false'}
+                      onChange={(e) => setEn(e.target.value === 'true')}
                       className="col-span-3 border rounded px-3 py-2"
                     >
                       <option value="true">Yes</option>
@@ -204,7 +227,7 @@ export default function Page() {
                   <DialogClose asChild>
                     <Button variant="secondary">Cancel</Button>
                   </DialogClose>
-                  <Button onClick={save}>{editing ? "Save" : "Create"}</Button>
+                  <Button onClick={save}>{editing ? 'Save' : 'Create'}</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -213,7 +236,7 @@ export default function Page() {
       </SidebarInset>
 
       {toDel && (
-        <AlertDialog open onOpenChange={o => !o && setDel(null)}>
+        <AlertDialog open onOpenChange={(o) => !o && setDel(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -222,11 +245,13 @@ export default function Page() {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setDel(null)}>Cancel</AlertDialogCancel>
+              <AlertDialogCancel onClick={() => setDel(null)}>
+                Cancel
+              </AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
-                  remove(toDel.id)
-                  setDel(null)
+                  remove(toDel.id);
+                  setDel(null);
                 }}
               >
                 Confirm
@@ -236,5 +261,5 @@ export default function Page() {
         </AlertDialog>
       )}
     </SidebarProvider>
-  )
+  );
 }

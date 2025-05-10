@@ -24,7 +24,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
-import { useUserId } from "@/hooks/useUserId"
+import { useUserId } from '@/hooks/useUserId';
+import { DataTableSkeleton } from '@/components/data-table-skeleton';
+import { IconTrash } from '@tabler/icons-react';
 
 type Beacon = {
   id: number;
@@ -43,23 +45,22 @@ type BeaconType = { id: number; name: string; enabled: boolean };
 type Point = { id: number; name: string };
 
 export default function Page() {
-  const userId = useUserId()
+  const userId = useUserId();
   const [beacons, setBeacons] = useState<Beacon[]>([]);
   const [statuses, setStatuses] = useState<Status[]>([]);
   const [types, setTypes] = useState<BeaconType[]>([]);
   const [points, setPoints] = useState<Point[]>([]);
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-const [createFields, setCreateFields] = useState({
-  name: '',
-  description: '',
-  status_id: 0,
-  enabled: true,
-  type_id: 0,
-  point_id: 0,
-  user_id: 0,
-});
-
+  const [createFields, setCreateFields] = useState({
+    name: '',
+    description: '',
+    status_id: 0,
+    enabled: true,
+    type_id: 0,
+    point_id: 0,
+    user_id: 0,
+  });
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [beaconToEdit, setBeaconToEdit] = useState<Beacon | null>(null);
@@ -125,24 +126,23 @@ const [createFields, setCreateFields] = useState({
   };
 
   const handleCreateSubmit = async () => {
-  const res = await fetch('/api/beacons/create', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(createFields),
-  });
+    const res = await fetch('/api/beacons/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(createFields),
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if (res.ok) {
-    setBeacons((prev) => [...prev, data.data]);
-    toast.success('Beacon created.');
-    setCreateDialogOpen(false);
-  } else {
-    console.error('Failed to create beacon', data);
-    toast.error('Failed to create beacon.');
-  }
-};
-
+    if (res.ok) {
+      setBeacons((prev) => [...prev, data.data]);
+      toast.success('Beacon created.');
+      setCreateDialogOpen(false);
+    } else {
+      console.error('Failed to create beacon', data);
+      toast.error('Failed to create beacon.');
+    }
+  };
 
   const handleEditSubmit = async () => {
     if (!beaconToEdit) return;
@@ -152,7 +152,7 @@ const [createFields, setCreateFields] = useState({
     const res = await fetch(`/api/beacons/update/${beaconToEdit.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(editFields)
+      body: JSON.stringify(editFields),
     });
 
     const data = await res.json();
@@ -172,6 +172,21 @@ const [createFields, setCreateFields] = useState({
       toast.error('Failed to update beacon.');
     }
   };
+
+  const handleDelete = async (id: number) => {
+  const res = await fetch(`/api/beacons/delete/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (res.ok) {
+    setBeacons((prev) => prev.filter((b) => b.id !== id));
+    toast.success(`Beacon #${id} deleted.`);
+  } else {
+    console.error('Failed to delete beacon');
+    toast.error('Failed to delete beacon.');
+  }
+};
+
 
   const beaconColumns: ColumnDef<Beacon>[] = [
     { accessorKey: 'id', header: 'ID' },
@@ -206,10 +221,22 @@ const [createFields, setCreateFields] = useState({
       header: '',
       cell: ({ row }) => (
         <div className="text-right">
-              <Button onClick={() => openEditDialog(row.original)} variant="ghost" size="icon">
-                <PencilIcon className="w-4 h-4" />
-              </Button>
-        </div>
+          <Button
+            onClick={() => openEditDialog(row.original)}
+            variant="ghost"
+            size="icon"
+          >
+            <PencilIcon className="w-4 h-4" />
+          </Button>
+          <Button
+        onClick={() => handleDelete(row.original.id)}
+        variant="ghost"
+        size="icon"
+        aria-label="Delete"
+      >
+        <span className="text-red-500"><IconTrash className="w-4 h-4" /></span>
+      </Button>
+    </div>
       ),
     },
   ];
@@ -229,31 +256,30 @@ const [createFields, setCreateFields] = useState({
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-        <Button
-  variant="outline"
-  size="sm"
-  className='self-start ml-4 lg:ml-6'
-  onClick={() => {
-    setCreateFields({
-      name: '',
-      description: '',
-      status_id: statuses[0]?.id ?? 0,
-      enabled: true,
-      type_id: types[0]?.id ?? 0,
-      point_id: points[0]?.id ?? 0,
-      user_id: userId ?? 0,
-    });
-    setCreateDialogOpen(true);
-  }}
->
-  <PlusIcon className="mr-2 h-4 w-4" />
-  <span className="hidden lg:inline">Create Beacon</span>
-</Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="self-start ml-4 lg:ml-6"
+                onClick={() => {
+                  setCreateFields({
+                    name: '',
+                    description: '',
+                    status_id: statuses[0]?.id ?? 0,
+                    enabled: true,
+                    type_id: types[0]?.id ?? 0,
+                    point_id: points[0]?.id ?? 0,
+                    user_id: userId ?? 0,
+                  });
+                  setCreateDialogOpen(true);
+                }}
+              >
+                <PlusIcon className="mr-2 h-4 w-4" />
+                <span className="hidden lg:inline">Create Beacon</span>
+              </Button>
 
               {loading ? (
-                <p className="text-sm text-muted">Loading beacons...</p>
+                <DataTableSkeleton columnCount={beaconColumns.length} />
               ) : (
-                
                 <DataTable data={beacons} columns={beaconColumns} />
               )}
             </div>
@@ -374,111 +400,124 @@ const [createFields, setCreateFields] = useState({
         </DialogContent>
       </Dialog>
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>Create Beacon</DialogTitle>
-      <DialogDescription>Fill in the details to create a new beacon.</DialogDescription>
-    </DialogHeader>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create Beacon</DialogTitle>
+            <DialogDescription>
+              Fill in the details to create a new beacon.
+            </DialogDescription>
+          </DialogHeader>
 
-    <div className="grid gap-4 py-4">
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label className="text-right">Name</Label>
-        <Input
-          value={createFields.name}
-          onChange={(e) =>
-            setCreateFields({ ...createFields, name: e.target.value })
-          }
-          className="col-span-3"
-        />
-      </div>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Name</Label>
+              <Input
+                value={createFields.name}
+                onChange={(e) =>
+                  setCreateFields({ ...createFields, name: e.target.value })
+                }
+                className="col-span-3"
+              />
+            </div>
 
-      <div className="grid grid-cols-4 items-start gap-4">
-        <Label className="text-right pt-2">Description</Label>
-        <textarea
-          value={createFields.description}
-          onChange={(e) =>
-            setCreateFields({ ...createFields, description: e.target.value })
-          }
-          className="col-span-3 border rounded px-3 py-2 h-24 resize-none"
-        />
-      </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label className="text-right pt-2">Description</Label>
+              <textarea
+                value={createFields.description}
+                onChange={(e) =>
+                  setCreateFields({
+                    ...createFields,
+                    description: e.target.value,
+                  })
+                }
+                className="col-span-3 border rounded px-3 py-2 h-24 resize-none"
+              />
+            </div>
 
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label className="text-right">Status</Label>
-        <select
-          value={createFields.status_id}
-          onChange={(e) =>
-            setCreateFields({
-              ...createFields,
-              status_id: Number(e.target.value),
-            })
-          }
-          className="col-span-3 border rounded px-3 py-2"
-        >
-          {statuses.map((status) => (
-            <option key={status.id} value={status.id}>
-              {status.name}
-            </option>
-          ))}
-        </select>
-      </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Status</Label>
+              <select
+                value={createFields.status_id}
+                onChange={(e) =>
+                  setCreateFields({
+                    ...createFields,
+                    status_id: Number(e.target.value),
+                  })
+                }
+                className="col-span-3 border rounded px-3 py-2"
+              >
+                {statuses.map((status) => (
+                  <option key={status.id} value={status.id}>
+                    {status.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label className="text-right">Enabled</Label>
-        <input
-          type="checkbox"
-          checked={createFields.enabled}
-          onChange={(e) =>
-            setCreateFields({ ...createFields, enabled: e.target.checked })
-          }
-          className="col-span-3 w-4 h-4"
-        />
-      </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Enabled</Label>
+              <input
+                type="checkbox"
+                checked={createFields.enabled}
+                onChange={(e) =>
+                  setCreateFields({
+                    ...createFields,
+                    enabled: e.target.checked,
+                  })
+                }
+                className="col-span-3 w-4 h-4"
+              />
+            </div>
 
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label className="text-right">Type</Label>
-        <select
-          value={createFields.type_id}
-          onChange={(e) =>
-            setCreateFields({ ...createFields, type_id: Number(e.target.value) })
-          }
-          className="col-span-3 border rounded px-3 py-2"
-        >
-          {types.map((type) => (
-            <option key={type.id} value={type.id}>
-              {type.name}
-            </option>
-          ))}
-        </select>
-      </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Type</Label>
+              <select
+                value={createFields.type_id}
+                onChange={(e) =>
+                  setCreateFields({
+                    ...createFields,
+                    type_id: Number(e.target.value),
+                  })
+                }
+                className="col-span-3 border rounded px-3 py-2"
+              >
+                {types.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label className="text-right">Point</Label>
-        <select
-          value={createFields.point_id}
-          onChange={(e) =>
-            setCreateFields({ ...createFields, point_id: Number(e.target.value) })
-          }
-          className="col-span-3 border rounded px-3 py-2"
-        >
-          {points.map((point) => (
-            <option key={point.id} value={point.id}>
-              {point.id}
-            </option>
-          ))}
-        </select>
-      </div>
-    </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Point</Label>
+              <select
+                value={createFields.point_id}
+                onChange={(e) =>
+                  setCreateFields({
+                    ...createFields,
+                    point_id: Number(e.target.value),
+                  })
+                }
+                className="col-span-3 border rounded px-3 py-2"
+              >
+                {points.map((point) => (
+                  <option key={point.id} value={point.id}>
+                    {point.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-    <DialogFooter>
-      <DialogClose asChild>
-        <Button variant="secondary">Cancel</Button>
-      </DialogClose>
-      <Button onClick={handleCreateSubmit}>Create</Button>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
-
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondary">Cancel</Button>
+            </DialogClose>
+            <Button onClick={handleCreateSubmit}>Create</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </SidebarProvider>
   );
 }

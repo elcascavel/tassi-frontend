@@ -24,6 +24,7 @@ import {
   DialogHeader,
   DialogDescription,
 } from "@/components/ui/dialog"
+import { DataTableSkeleton } from "@/components/data-table-skeleton"
 
 type Ticket = {
   id: number
@@ -191,11 +192,11 @@ export default function Page() {
           <div className="flex flex-1 flex-col">
             <div className="@container/main flex flex-1 flex-col gap-2">
               <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                {loading ? (
-                  <p className="text-sm text-muted">Loading tickets...</p>
-                ) : (
-                  <DataTable data={tickets} columns={ticketColumns} />
-                )}
+            {loading ? (
+              <DataTableSkeleton columnCount={ticketColumns.length} />
+            ) : (
+              <DataTable data={tickets} columns={ticketColumns} />
+            )}
               </div>
             </div>
           </div>

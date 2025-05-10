@@ -36,6 +36,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { PlusIcon } from "lucide-react"
 import { IconDotsVertical } from "@tabler/icons-react"
+import { DataTableSkeleton } from "@/components/data-table-skeleton"
 
 type SupportCategory = { id: number; name: string; enabled: boolean }
 
@@ -159,7 +160,7 @@ export default function Page() {
             </Button>
 
             {loading ? (
-              <p className="text-sm text-muted">Loading support categories…</p>
+              <DataTableSkeleton columnCount={columns.length} />
             ) : (
               <DataTable data={categories} columns={columns} />
             )}
