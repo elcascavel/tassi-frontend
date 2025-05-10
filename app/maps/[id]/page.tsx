@@ -123,6 +123,50 @@ export default function Page() {
                                 String(p.id)
                               );
                             }}
+                            onDragEnd={async (e) => {
+                              if (!map) return;
+                              const rect =
+                                e.currentTarget.offsetParent?.getBoundingClientRect();
+                              if (!rect) return;
+
+                              const newX = e.clientX - rect.left;
+                              const newY = e.clientY - rect.top;
+
+                              try {
+                                const res = await fetch(
+                                  `/api/maps/points/${p.id}`,
+                                  {
+                                    method: 'PUT',
+                                    headers: {
+                                      'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                      x: newX,
+                                      y: newY,
+                                      enabled: p.enabled,
+                                      map_id: p.map_id,
+                                    }),
+                                  }
+                                );
+
+                                if (res.ok) {
+                                  setPoints((prev) =>
+                                    prev.map((pt) =>
+                                      pt.id === p.id
+                                        ? { ...pt, x: newX, y: newY }
+                                        : pt
+                                    )
+                                  );
+                                } else {
+                                  console.error(
+                                    'Failed to move point:',
+                                    await res.text()
+                                  );
+                                }
+                              } catch (err) {
+                                console.error('Drag update failed', err);
+                              }
+                            }}
                           />
                         </TooltipTrigger>
                         <TooltipContent side="top">
