@@ -52,7 +52,7 @@ export default function Page() {
 
   const [toDelete, setToDelete] = useState<BeaconType | null>(null)
 
-  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('beacons/types');
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('beacons/types', 'type_id');
 
 
   useEffect(() => {

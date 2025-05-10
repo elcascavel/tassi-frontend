@@ -67,7 +67,7 @@ export default function Page() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [beaconToEdit, setBeaconToEdit] = useState<Beacon | null>(null);
 
-  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('beacons');
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('beacons', 'beacon_id');
 
   const [editFields, setEditFields] = useState({
     name: '',
