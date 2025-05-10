@@ -36,26 +36,27 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@radix-ui/react-dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import { IconDotsVertical } from '@tabler/icons-react';
 import { DataTable } from '@/components/data-table';
 import Link from 'next/link';
 import { DataTableSkeleton } from '@/components/data-table-skeleton';
+import { useTranslationModal } from '@/hooks/useTranslationModal';
 
 export default function Page() {
   const userId = useUserId();
   const [maps, setMaps] = useState<Map[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // create/edit dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Map | null>(null);
   const [name, setName] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [enabled, setEnabled] = useState(true);
 
-  // delete confirmation
   const [toDelete, setToDelete] = useState<Map | null>(null);
+
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('maps', 'map_id');
 
   type Map = {
     id: number;
@@ -64,7 +65,6 @@ export default function Page() {
     enabled: boolean;
   };
 
-  // fetch maps
   useEffect(() => {
     (async () => {
       const res = await fetch('/api/maps');
@@ -114,7 +114,6 @@ export default function Page() {
     setEnabled(true);
   };
 
-  // delete
   const deleteMap = async (id: number) => {
     const res = await fetch(`/api/maps/delete/${id}`, { method: 'DELETE' });
     if (res.ok) {
@@ -164,6 +163,9 @@ export default function Page() {
               >
                 Edit
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openTranslationModal(row.original.id)}>
+                Translate
+              </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-500"
                 onClick={() => setToDelete(row.original)}
@@ -211,7 +213,6 @@ export default function Page() {
             <DataTable data={maps} columns={mapColumns} />
           )}
 
-          {/* Create/Edit Dialog */}
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogContent>
               <DialogHeader>
@@ -270,7 +271,6 @@ export default function Page() {
             </DialogContent>
           </Dialog>
 
-          {/* Delete Confirmation */}
           {toDelete && (
             <AlertDialog open onOpenChange={() => setToDelete(null)}>
               <AlertDialogContent>
@@ -297,6 +297,7 @@ export default function Page() {
               </AlertDialogContent>
             </AlertDialog>
           )}
+          <TranslationModalWrapper />
         </div>
       </SidebarInset>
     </SidebarProvider>

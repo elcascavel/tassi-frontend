@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { TranslationModal } from '@/components/translation-modal';
 
-export function useTranslationModal(entityType: string) {
+export function useTranslationModal(entityType: string, entityKey: string) {
   const [translationEntityId, setTranslationEntityId] = useState<number | null>(null);
 
   const openTranslationModal = (id: number) => setTranslationEntityId(id);
@@ -14,6 +14,7 @@ export function useTranslationModal(entityType: string) {
       <TranslationModal
         entityId={translationEntityId}
         entityType={entityType}
+        entityKey={entityKey}
         open={true}
         onClose={closeTranslationModal}
       />

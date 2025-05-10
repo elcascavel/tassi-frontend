@@ -37,6 +37,7 @@ import { Button } from "@/components/ui/button"
 import { PlusIcon } from "lucide-react"
 import { IconDotsVertical } from "@tabler/icons-react"
 import { DataTableSkeleton } from "@/components/data-table-skeleton"
+import { useTranslationModal } from '@/hooks/useTranslationModal';
 
 type BeaconType = { id: number; name: string; enabled: boolean }
 
@@ -50,6 +51,9 @@ export default function Page() {
   const [enabled, setEnabled] = useState(true)
 
   const [toDelete, setToDelete] = useState<BeaconType | null>(null)
+
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('beacons/types');
+
 
   useEffect(() => {
     ;(async () => {
@@ -109,23 +113,27 @@ export default function Page() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => {
-                  setEditing(row.original)
-                  setName(row.original.name)
-                  setEnabled(row.original.enabled)
-                  setDialogOpen(true)
-                }}
-              >
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-red-500"
-                onClick={() => setToDelete(row.original)}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
+  <DropdownMenuItem
+    onClick={() => {
+      setEditing(row.original)
+      setName(row.original.name)
+      setEnabled(row.original.enabled)
+      setDialogOpen(true)
+    }}
+  >
+    Edit
+  </DropdownMenuItem>
+  <DropdownMenuItem onClick={() => openTranslationModal(row.original.id)}>
+    Translate
+  </DropdownMenuItem>
+  <DropdownMenuItem
+    className="text-red-500"
+    onClick={() => setToDelete(row.original)}
+  >
+    Delete
+  </DropdownMenuItem>
+</DropdownMenuContent>
+
           </DropdownMenu>
         </div>
       ),
@@ -225,6 +233,7 @@ export default function Page() {
           </AlertDialogContent>
         </AlertDialog>
       )}
+      <TranslationModalWrapper />
     </SidebarProvider>
   )
 }

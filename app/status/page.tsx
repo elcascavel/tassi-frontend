@@ -38,6 +38,7 @@ import { IconDotsVertical } from "@tabler/icons-react"
 import { PlusIcon } from "lucide-react"
 import { useUser } from "@auth0/nextjs-auth0/client"
 import { DataTableSkeleton } from "@/components/data-table-skeleton"
+import { useTranslationModal } from "@/hooks/useTranslationModal"
 
 type Status = {
   id: number
@@ -56,6 +57,8 @@ export default function Page() {
   const [enabled, setEnabled] = useState(true)
 
   const [statusToDelete, setStatusToDelete] = useState<Status | null>(null)
+
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal("status", "status_id")
 
   useEffect(() => {
     ;(async () => {
@@ -123,6 +126,9 @@ export default function Page() {
                 }}
               >
                 Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openTranslationModal(row.original.id)}>
+                Translate
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-500"
@@ -232,6 +238,7 @@ export default function Page() {
           </AlertDialogContent>
         </AlertDialog>
       )}
+      <TranslationModalWrapper />
     </SidebarProvider>
   )
 }

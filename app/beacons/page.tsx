@@ -9,7 +9,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getStatusVariant } from '@/lib/utils';
-import { PencilIcon, PlusIcon } from 'lucide-react';
+import { GlobeIcon, PencilIcon, PlusIcon } from 'lucide-react';
 
 import {
   Dialog,
@@ -27,6 +27,8 @@ import { toast } from 'sonner';
 import { useUserId } from '@/hooks/useUserId';
 import { DataTableSkeleton } from '@/components/data-table-skeleton';
 import { IconTrash } from '@tabler/icons-react';
+
+import { useTranslationModal } from '@/hooks/useTranslationModal';
 
 type Beacon = {
   id: number;
@@ -64,6 +66,8 @@ export default function Page() {
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [beaconToEdit, setBeaconToEdit] = useState<Beacon | null>(null);
+
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('beacons');
 
   const [editFields, setEditFields] = useState({
     name: '',
@@ -228,6 +232,14 @@ export default function Page() {
           >
             <PencilIcon className="w-4 h-4" />
           </Button>
+          <Button
+  onClick={() => openTranslationModal(row.original.id)}
+  variant="ghost"
+  size="icon"
+>
+  <GlobeIcon className="w-4 h-4" />
+</Button>
+
           <Button
         onClick={() => handleDelete(row.original.id)}
         variant="ghost"
@@ -518,6 +530,7 @@ export default function Page() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+<TranslationModalWrapper />
     </SidebarProvider>
   );
 }
