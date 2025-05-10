@@ -34,7 +34,7 @@ type Beacon = {
   enabled: boolean;
   type_id: number;
   point_id: number;
-  user_id: number;
+  created_by: number;
   created: string;
 };
 
@@ -119,7 +119,7 @@ const [createFields, setCreateFields] = useState({
       enabled: beacon.enabled,
       type_id: beacon.type_id,
       point_id: beacon.point_id,
-      user_id: beacon.user_id,
+      user_id: beacon.created_by,
     });
     setEditDialogOpen(true);
   };

@@ -1,9 +1,5 @@
-// lib/navigation.ts
 import {
-  IconDashboard,
   IconHighlight,
-  IconSettings,
-  IconHelp,
   IconTicket,
   IconUsers,
   IconCategory2,
@@ -28,76 +24,38 @@ export const routeMap: Record<string, string> = {
   "/status": "Status",
   "/users": "Users",
   "/settings": "Settings",
-  "/help": "Get Help",
 }
 
 export const navMain = [
   {
-    title: routeMap["/"],
-    url: "/",
-    icon: IconDashboard,
+    group: "Map Management",
+    items: [
+      { title: routeMap["/maps"], url: "/maps", icon: IconMap },
+      { title: routeMap["/points"], url: "/points", icon: IconPoint },
+      { title: routeMap["/point-links"], url: "/point-links", icon: IconLink },
+    ],
   },
   {
-    title: routeMap["/maps"],
-    url: "/maps",
-    icon: IconMap,
+    group: "Beacons",
+    items: [
+      { title: routeMap["/beacons"], url: "/beacons", icon: IconHighlight },
+      { title: routeMap["/beacon-types"], url: "/beacon-types", icon: IconCategory2 },
+      { title: routeMap["/disabilities"], url: "/disabilities", icon: IconDisabled2 },
+      { title: routeMap["/status"], url: "/status", icon: IconStatusChange },
+    ],
   },
   {
-    title: routeMap["/beacons"],
-    url: "/beacons",
-    icon: IconHighlight,
+    group: "Support",
+    items: [
+      { title: routeMap["/support"], url: "/support", icon: IconTicket },
+      { title: routeMap["/support-categories"], url: "/support-categories", icon: IconCategory },
+    ],
   },
   {
-    title: routeMap["/beacon-types"],
-    url: "/beacon-types",
-    icon: IconCategory2,
+    group: "System",
+    items: [
+      { title: routeMap["/users"], url: "/users", icon: IconUsers },
+    ],
   },
-  {
-    title: routeMap["/points"],
-    url: "/points",
-    icon: IconPoint,
-  },
-    {
-    title: routeMap["/point-links"],
-    url: "/point-links",
-    icon: IconLink,
-  },
-  {
-    title: routeMap["/support"],
-    url: "/support",
-    icon: IconTicket,
-  },
-  {
-    title: routeMap["/support-categories"],
-    url: "/support-categories",
-    icon: IconCategory,
-  },
-  {
-    title: routeMap["/disabilities"],
-    url: "/disabilities",
-    icon: IconDisabled2,
-  },
-  {
-    title: routeMap["/status"],
-    url: "/status",
-    icon: IconStatusChange,
-  },
-  {
-    title: routeMap["/users"],
-    url: "/users",
-    icon: IconUsers,
-  },
-]
+];
 
-export const navSecondary = [
-  {
-    title: routeMap["/settings"],
-    url: "/settings",
-    icon: IconSettings,
-  },
-  {
-    title: routeMap["/help"],
-    url: "/help",
-    icon: IconHelp,
-  },
-]
