@@ -8,7 +8,6 @@ import {
   IconStatusChange,
   IconPoint,
   IconMap,
-  IconLink,
 } from "@tabler/icons-react"
 
 export const routeMap: Record<string, string> = {
@@ -32,7 +31,7 @@ export const navMain = [
     items: [
       { title: routeMap["/maps"], url: "/maps", icon: IconMap },
       { title: routeMap["/points"], url: "/points", icon: IconPoint },
-      { title: routeMap["/point-links"], url: "/point-links", icon: IconLink },
+      // { title: routeMap["/point-links"], url: "/point-links", icon: IconLink },
     ],
   },
   {
