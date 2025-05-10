@@ -79,12 +79,21 @@ const payload = {
 
     if (res.ok) {
       const json = await res.json();
-      setTranslations((prev) =>
-        editing
-          ? prev.map((t) => (t.id === editing.id ? json.data.translation : t))
-          : [...prev, json.data.translation]
-      );
+const newTranslation = json?.data?.translation;
+
+if (!newTranslation || typeof newTranslation !== 'object' || !newTranslation.lang) {
+  toast.error('Invalid translation returned from server.');
+  return;
+}
+
+setTranslations((prev) =>
+  editing
+    ? prev.map((t) => (t.id === editing.id ? newTranslation : t))
+    : [...prev, newTranslation]
+);
+
       reset();
+      onClose();
       toast.success('Translation saved.');
     } else {
       toast.error('Failed to save translation.');
