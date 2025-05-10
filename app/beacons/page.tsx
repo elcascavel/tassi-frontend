@@ -29,6 +29,7 @@ import { DataTableSkeleton } from '@/components/data-table-skeleton';
 import { IconTrash } from '@tabler/icons-react';
 
 import { useTranslationModal } from '@/hooks/useTranslationModal';
+import Link from 'next/link';
 
 type Beacon = {
   id: number;
@@ -194,7 +195,18 @@ export default function Page() {
 
   const beaconColumns: ColumnDef<Beacon>[] = [
     { accessorKey: 'id', header: 'ID' },
-    { accessorKey: 'name', header: 'Name' },
+    {
+      accessorKey: 'name',
+      header: 'Name',
+      cell: ({ row }) => (
+        <Link
+          href={`/beacons/${row.original.id}`}
+          className="text-blue-600 hover:underline"
+        >
+          {row.original.name}
+        </Link>
+      ),
+    },
     {
       accessorKey: 'status_id',
       header: 'Status',
