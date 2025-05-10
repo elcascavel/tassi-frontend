@@ -37,6 +37,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PlusIcon } from 'lucide-react';
 import { IconDotsVertical } from '@tabler/icons-react';
+import { DataTableSkeleton } from '@/components/data-table-skeleton';
 
 // Map type for select dropdown
 export type MapItem = {
@@ -237,7 +238,7 @@ export default function Page() {
           </Button>
 
           {loading ? (
-            <p className="text-sm text-muted">Loading points…</p>
+            <DataTableSkeleton columnCount={columns.length} />
           ) : (
             <DataTable data={points} columns={columns} />
           )}

@@ -37,6 +37,7 @@ import { Button } from "@/components/ui/button"
 import { IconDotsVertical } from "@tabler/icons-react"
 import { PlusIcon } from "lucide-react"
 import { useUser } from "@auth0/nextjs-auth0/client"
+import { DataTableSkeleton } from "@/components/data-table-skeleton"
 
 type Status = {
   id: number
@@ -166,7 +167,7 @@ export default function Page() {
             </Button>
 
             {loading ? (
-              <p className="text-sm text-muted">Loading statuses…</p>
+              <DataTableSkeleton columnCount={columns.length} />
             ) : (
               <DataTable data={statuses} columns={columns} />
             )}
