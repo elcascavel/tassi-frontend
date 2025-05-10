@@ -38,13 +38,7 @@ import { PlusIcon } from 'lucide-react';
 import { IconDotsVertical } from '@tabler/icons-react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { DataTableSkeleton } from '@/components/data-table-skeleton';
-
-type Disability = {
-  id: number;
-  name: string;
-  severity: number;
-  enabled: boolean;
-};
+import { useTranslationModal } from '@/hooks/useTranslationModal';
 
 export default function Page() {
   const { user } = useUser();
@@ -59,6 +53,15 @@ export default function Page() {
   const [en, setEn] = useState(true);
 
   const [toDel, setDel] = useState<Disability | null>(null);
+
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('disabilities', 'disability_id');
+
+  type Disability = {
+    id: number;
+    name: string;
+    severity: number;
+    enabled: boolean;
+  };
 
   useEffect(() => {
     (async () => {
@@ -134,6 +137,9 @@ export default function Page() {
               }}
             >
               Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => openTranslationModal(row.original.id)}>
+              Translate
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-red-500"
@@ -234,7 +240,6 @@ export default function Page() {
           </div>
         </div>
       </SidebarInset>
-
       {toDel && (
         <AlertDialog open onOpenChange={(o) => !o && setDel(null)}>
           <AlertDialogContent>
@@ -260,6 +265,7 @@ export default function Page() {
           </AlertDialogContent>
         </AlertDialog>
       )}
+      <TranslationModalWrapper />
     </SidebarProvider>
   );
 }

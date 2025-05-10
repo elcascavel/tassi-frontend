@@ -37,6 +37,7 @@ import { Label } from "@/components/ui/label"
 import { PlusIcon } from "lucide-react"
 import { IconDotsVertical } from "@tabler/icons-react"
 import { DataTableSkeleton } from "@/components/data-table-skeleton"
+import { useTranslationModal } from "@/hooks/useTranslationModal"
 
 type SupportCategory = { id: number; name: string; enabled: boolean }
 
@@ -50,6 +51,8 @@ export default function Page() {
   const [enabled, setEnabled] = useState(true)
 
   const [catToDelete, setCatToDelete] = useState<SupportCategory | null>(null)
+
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal("support/categories", "category_id")
 
   useEffect(() => {
     ;(async () => {
@@ -116,6 +119,9 @@ export default function Page() {
                 }}
               >
                 Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openTranslationModal(row.original.id)}>
+                Translate
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-500"
@@ -210,9 +216,7 @@ export default function Page() {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setCatToDelete(null)}>
-                Cancel
-              </AlertDialogCancel>
+              <AlertDialogCancel onClick={() => setCatToDelete(null)}>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
                   del(catToDelete.id)
@@ -225,6 +229,7 @@ export default function Page() {
           </AlertDialogContent>
         </AlertDialog>
       )}
+      <TranslationModalWrapper />
     </SidebarProvider>
   )
 }
