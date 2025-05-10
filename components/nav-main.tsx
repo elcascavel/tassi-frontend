@@ -1,45 +1,62 @@
 "use client"
 
-import { type Icon } from "@tabler/icons-react"
-import {
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import {
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import type { Icon } from "@tabler/icons-react"
 
-export function NavMain({
-  items,
-}: {
+type NavGroup = {
+  group: string
   items: {
     title: string
     url: string
     icon?: Icon
   }[]
-}) {
+}
+
+export function NavMain({ items }: { items: NavGroup[] }) {
   const pathname = usePathname()
 
   return (
-    <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-2">
-        <SidebarMenu>
-          {items.map((item) => {
-            const isActive = pathname === item.url
-            return (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-                <Link href={item.url}>
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-                </Link>
+    <SidebarMenu>
+      {items.map((section) => (
+        <Collapsible key={section.group} defaultOpen className="group/collapsible">
+          <SidebarMenuItem>
+            <CollapsibleTrigger asChild>
+              <SidebarMenuButton>
+                <span className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+                  {section.group}
+                </span>
               </SidebarMenuButton>
-            </SidebarMenuItem>
-          )})}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
+            </CollapsibleTrigger>
+
+            <CollapsibleContent>
+              <SidebarMenuSub>
+                {section.items.map((item) => {
+                  const isActive = pathname === item.url
+                  return (
+                    <SidebarMenuSubItem key={item.url}>
+                      <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
+                        <Link href={item.url} className="flex items-center gap-2">
+                          {item.icon && <item.icon className="w-4 h-4" />}
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuSubItem>
+                  )
+                })}
+              </SidebarMenuSub>
+            </CollapsibleContent>
+          </SidebarMenuItem>
+        </Collapsible>
+      ))}
+    </SidebarMenu>
   )
 }
