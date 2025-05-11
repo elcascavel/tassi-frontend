@@ -83,7 +83,7 @@ export default function Page() {
     formData.append('enabled', String(enabled));
     if (file) formData.append('image', file);
 
-    if (editing) {
+    if (editing              ) {
       const res = await fetch(`/api/maps/update/${editing.id}`, {
         method: 'PUT',
         body: formData,
