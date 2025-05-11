@@ -42,6 +42,8 @@ export default function Page() {
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   useEffect(() => {
     fetch(`/api/maps/${id}`)
       .then(res => res.json())
@@ -118,8 +120,10 @@ export default function Page() {
                     alt={`Map ${map.name}`}
                     className="rounded border w-full h-auto"
                     draggable={false}
+                    onLoad={() => setImageLoaded(true)}
                   />
 
+                  {imageLoaded && (
                   <TooltipProvider>
                     {points.map((p) => {
                       const { left, top } = mapImagePointToScreen(p.x, p.y);
@@ -172,6 +176,7 @@ export default function Page() {
                       );
                     })}
                   </TooltipProvider>
+                  )}
                 </ContextMenuTrigger>
                 <ContextMenuContent>
                   <ContextMenuItem onClick={handleCreatePoint}>Create Point Here</ContextMenuItem>
