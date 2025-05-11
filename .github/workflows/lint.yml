@@ -1,4 +1,4 @@
-name: Lint Code
+name: Lint & Format
 
 on:
   push:
@@ -20,7 +20,10 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run ESLint
         run: npm run lint
+
+      - name: Check Prettier formatting
+        run: npm run format
