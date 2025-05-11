@@ -38,7 +38,10 @@ export default function Page() {
   const { id } = useParams();
   const [map, setMap] = useState<Map | null>(null);
   const [points, setPoints] = useState<Point[]>([]);
-  const [clickPosition, setClickPosition] = useState<{ x: number; y: number } | null>(null);
+  const [clickPosition, setClickPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -46,14 +49,14 @@ export default function Page() {
 
   useEffect(() => {
     fetch(`/api/maps/${id}`)
-      .then(res => res.json())
-      .then(json => setMap(json?.data ?? null))
-      .catch(err => console.error('Failed to load map', err));
+      .then((res) => res.json())
+      .then((json) => setMap(json?.data ?? null))
+      .catch((err) => console.error('Failed to load map', err));
 
     fetch(`/api/maps/${id}/points`)
-      .then(res => res.json())
-      .then(json => setPoints(json?.data?.points ?? []))
-      .catch(err => console.error('Failed to load points', err));
+      .then((res) => res.json())
+      .then((json) => setPoints(json?.data?.points ?? []))
+      .catch((err) => console.error('Failed to load points', err));
   }, [id]);
 
   const handleCreatePoint = async () => {
@@ -76,7 +79,7 @@ export default function Page() {
 
     if (res.ok) {
       const json = await res.json();
-      setPoints(prev => [...prev, json.data.point]);
+      setPoints((prev) => [...prev, json.data.point]);
     } else {
       console.error('Failed to create point:', await res.text());
     }
@@ -124,62 +127,86 @@ export default function Page() {
                   />
 
                   {imageLoaded && (
-                  <TooltipProvider>
-                    {points.map((p) => {
-                      const { left, top } = mapImagePointToScreen(p.x, p.y);
-                      return (
-                        <Tooltip key={p.id}>
-                          <TooltipTrigger asChild>
-                            <div
-                              className="absolute w-3 h-3 bg-red-500 rounded-full border border-white shadow cursor-move animate-pulse"
-                              style={{
-                                left: `${left}px`,
-                                top: `${top}px`,
-                                transform: 'translate(-50%, -50%)',
-                              }}
-                              draggable
-                              onDragStart={(e) => {
-                                e.dataTransfer.setData('text/plain', String(p.id));
-                              }}
-                              onDragEnd={async (e) => {
-                                if (!imageRef.current) return;
-                                const rect = imageRef.current.getBoundingClientRect();
-                                const newX = ((e.clientX - rect.left) / rect.width) * 1920;
-                                const newY = ((e.clientY - rect.top) / rect.height) * 1080;
-
-                                const res = await fetch(`/api/maps/points/${p.id}`, {
-                                  method: 'PUT',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({
-                                    x: newX,
-                                    y: newY,
-                                    map_id: p.map_id,
-                                    enabled: p.enabled,
-                                  }),
-                                });
-
-                                if (res.ok) {
-                                  setPoints(prev =>
-                                    prev.map(pt => pt.id === p.id ? { ...pt, x: newX, y: newY } : pt)
+                    <TooltipProvider>
+                      {points.map((p) => {
+                        const { left, top } = mapImagePointToScreen(p.x, p.y);
+                        return (
+                          <Tooltip key={p.id}>
+                            <TooltipTrigger asChild>
+                              <div
+                                className="absolute w-3 h-3 bg-red-500 rounded-full border border-white shadow cursor-move animate-pulse"
+                                style={{
+                                  left: `${left}px`,
+                                  top: `${top}px`,
+                                  transform: 'translate(-50%, -50%)',
+                                }}
+                                draggable
+                                onDragStart={(e) => {
+                                  e.dataTransfer.setData(
+                                    'text/plain',
+                                    String(p.id)
                                   );
-                                } else {
-                                  console.error('Failed to move point:', await res.text());
-                                }
-                              }}
-                            />
-                          </TooltipTrigger>
-                          <TooltipContent side="top">
-                            <p className='font-bold'>Point #{p.id}</p>
-                            <p>X: {p.x.toFixed(1)}, Y: {p.y.toFixed(1)}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      );
-                    })}
-                  </TooltipProvider>
+                                }}
+                                onDragEnd={async (e) => {
+                                  if (!imageRef.current) return;
+                                  const rect =
+                                    imageRef.current.getBoundingClientRect();
+                                  const newX =
+                                    ((e.clientX - rect.left) / rect.width) *
+                                    1920;
+                                  const newY =
+                                    ((e.clientY - rect.top) / rect.height) *
+                                    1080;
+
+                                  const res = await fetch(
+                                    `/api/maps/points/${p.id}`,
+                                    {
+                                      method: 'PUT',
+                                      headers: {
+                                        'Content-Type': 'application/json',
+                                      },
+                                      body: JSON.stringify({
+                                        x: newX,
+                                        y: newY,
+                                        map_id: p.map_id,
+                                        enabled: p.enabled,
+                                      }),
+                                    }
+                                  );
+
+                                  if (res.ok) {
+                                    setPoints((prev) =>
+                                      prev.map((pt) =>
+                                        pt.id === p.id
+                                          ? { ...pt, x: newX, y: newY }
+                                          : pt
+                                      )
+                                    );
+                                  } else {
+                                    console.error(
+                                      'Failed to move point:',
+                                      await res.text()
+                                    );
+                                  }
+                                }}
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                              <p className="font-bold">Point #{p.id}</p>
+                              <p>
+                                X: {p.x.toFixed(1)}, Y: {p.y.toFixed(1)}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        );
+                      })}
+                    </TooltipProvider>
                   )}
                 </ContextMenuTrigger>
                 <ContextMenuContent>
-                  <ContextMenuItem onClick={handleCreatePoint}>Create Point Here</ContextMenuItem>
+                  <ContextMenuItem onClick={handleCreatePoint}>
+                    Create Point Here
+                  </ContextMenuItem>
                 </ContextMenuContent>
               </ContextMenu>
             </div>

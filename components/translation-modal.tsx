@@ -62,14 +62,13 @@ export function TranslationModal({
       ? `/api/${entityType}/translations/update/${editing.id}`
       : `/api/${entityType}/translations/create`;
 
-    const key = entityKey ?? `${entityType.split('/').pop()?.replace(/s$/, '')}_id`;
+    const key =
+      entityKey ?? `${entityType.split('/').pop()?.replace(/s$/, '')}_id`;
 
-
-const payload = {
-  ...fields,
-  [key]: entityId,
-};
-
+    const payload = {
+      ...fields,
+      [key]: entityId,
+    };
 
     const res = await fetch(url, {
       method,
@@ -79,18 +78,22 @@ const payload = {
 
     if (res.ok) {
       const json = await res.json();
-const newTranslation = json?.data?.translation;
+      const newTranslation = json?.data?.translation;
 
-if (!newTranslation || typeof newTranslation !== 'object' || !newTranslation.lang) {
-  toast.error('Invalid translation returned from server.');
-  return;
-}
+      if (
+        !newTranslation ||
+        typeof newTranslation !== 'object' ||
+        !newTranslation.lang
+      ) {
+        toast.error('Invalid translation returned from server.');
+        return;
+      }
 
-setTranslations((prev) =>
-  editing
-    ? prev.map((t) => (t.id === editing.id ? newTranslation : t))
-    : [...prev, newTranslation]
-);
+      setTranslations((prev) =>
+        editing
+          ? prev.map((t) => (t.id === editing.id ? newTranslation : t))
+          : [...prev, newTranslation]
+      );
 
       reset();
       onClose();
@@ -132,9 +135,16 @@ setTranslations((prev) =>
 
         <div className="space-y-4 max-h-[60vh] overflow-y-auto">
           {translations.map((t) => (
-            <div key={t.id} className="flex justify-between items-center border p-2 rounded">
+            <div
+              key={t.id}
+              className="flex justify-between items-center border p-2 rounded"
+            >
               <div className="flex flex-col gap-2">
-                <p className="font-medium">{SUPPORTED_LANGUAGES.find((l) => l.code === t.lang)?.label ?? t.lang}: <span className="font-semibold">{t.name}</span></p>
+                <p className="font-medium">
+                  {SUPPORTED_LANGUAGES.find((l) => l.code === t.lang)?.label ??
+                    t.lang}
+                  : <span className="font-semibold">{t.name}</span>
+                </p>
                 {t.description && (
                   <p className="text-sm text-neutral-500">{t.description}</p>
                 )}
@@ -171,7 +181,9 @@ setTranslations((prev) =>
               <select
                 value={fields.lang}
                 disabled={!!editing}
-                onChange={(e) => setFields((f) => ({ ...f, lang: e.target.value }))}
+                onChange={(e) =>
+                  setFields((f) => ({ ...f, lang: e.target.value }))
+                }
                 className="col-span-3 border rounded px-3 py-2"
               >
                 <option value="">Select language</option>
@@ -187,7 +199,9 @@ setTranslations((prev) =>
               <Label className="text-right">Name</Label>
               <Input
                 value={fields.name}
-                onChange={(e) => setFields((f) => ({ ...f, name: e.target.value }))}
+                onChange={(e) =>
+                  setFields((f) => ({ ...f, name: e.target.value }))
+                }
                 className="col-span-3"
               />
             </div>
@@ -196,7 +210,9 @@ setTranslations((prev) =>
               <Label className="text-right">Description</Label>
               <Input
                 value={fields.description}
-                onChange={(e) => setFields((f) => ({ ...f, description: e.target.value }))}
+                onChange={(e) =>
+                  setFields((f) => ({ ...f, description: e.target.value }))
+                }
                 className="col-span-3"
               />
             </div>
@@ -205,7 +221,9 @@ setTranslations((prev) =>
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="secondary" onClick={reset}>Close</Button>
+            <Button variant="secondary" onClick={reset}>
+              Close
+            </Button>
           </DialogClose>
           <Button onClick={saveTranslation}>
             {editing ? 'Update' : 'Add'} Translation

@@ -90,61 +90,60 @@ export default function Page() {
     })();
   }, []);
 
-const savePoint = async () => {
-  if (!x || !y || !mapId) return;
+  const savePoint = async () => {
+    if (!x || !y || !mapId) return;
 
-  const payload = {
-    x: Number.parseFloat(x),
-    y: Number.parseFloat(y),
-    map_id: Number.parseInt(mapId, 10),
-    enabled,
+    const payload = {
+      x: Number.parseFloat(x),
+      y: Number.parseFloat(y),
+      map_id: Number.parseInt(mapId, 10),
+      enabled,
+    };
+
+    let res: Response;
+
+    if (editing) {
+      const editingId = editing.id;
+
+      res = await fetch(`/api/maps/points/${editingId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        setPoints((prev) =>
+          prev.map((p) => (p.id === editingId ? { ...p, ...payload } : p))
+        );
+      } else {
+        const errText = await res.text();
+        console.error('Failed to update point:', errText);
+      }
+    } else {
+      // 👇 This was missing
+      res = await fetch(`/api/maps/points/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        setPoints((prev) => [...prev, json.data.point]);
+      } else {
+        const errText = await res.text();
+        console.error('Failed to create point:', errText);
+      }
+    }
+
+    // Reset form
+    setDialogOpen(false);
+    setEditing(null);
+    setX('');
+    setY('');
+    setMapId('');
+    setEnabled(true);
   };
-
-  let res: Response;
-
-  if (editing) {
-    const editingId = editing.id;
-
-    res = await fetch(`/api/maps/points/${editingId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    if (res.ok) {
-      setPoints((prev) =>
-        prev.map((p) => (p.id === editingId ? { ...p, ...payload } : p))
-      );
-    } else {
-      const errText = await res.text();
-      console.error('Failed to update point:', errText);
-    }
-  } else {
-    // 👇 This was missing
-    res = await fetch(`/api/maps/points/create`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    if (res.ok) {
-      const json = await res.json();
-      setPoints((prev) => [...prev, json.data.point]);
-    } else {
-      const errText = await res.text();
-      console.error('Failed to create point:', errText);
-    }
-  }
-
-  // Reset form
-  setDialogOpen(false);
-  setEditing(null);
-  setX('');
-  setY('');
-  setMapId('');
-  setEnabled(true);
-};
-
 
   // delete point
   const deletePoint = async (id: number) => {

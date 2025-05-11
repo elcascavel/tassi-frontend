@@ -37,7 +37,9 @@ export default function BeaconDetailPage() {
 
     fetch(`/api/beacons/files/${id}`)
       .then((res) => res.json())
-      .then((data) => setFiles(Array.isArray(data?.data?.files) ? data.data.files : []))
+      .then((data) =>
+        setFiles(Array.isArray(data?.data?.files) ? data.data.files : [])
+      )
       .catch(() => toast.error('Failed to fetch files'));
   }, [id]);
 
@@ -93,14 +95,22 @@ export default function BeaconDetailPage() {
             <>
               <Card>
                 <CardContent className="space-y-2">
-                  <p><strong>Name:</strong> {beacon.name}</p>
-                  <p><strong>Description:</strong> {beacon.description}</p>
+                  <p>
+                    <strong>Name:</strong> {beacon.name}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {beacon.description}
+                  </p>
                 </CardContent>
               </Card>
 
               <div className="space-y-2">
                 <h2 className="text-lg font-semibold">Upload Files</h2>
-                <Input type="file" onChange={handleUpload} disabled={uploading} />
+                <Input
+                  type="file"
+                  onChange={handleUpload}
+                  disabled={uploading}
+                />
               </div>
 
               <div className="space-y-2">
@@ -109,59 +119,69 @@ export default function BeaconDetailPage() {
                   <p className="text-muted-foreground">No files uploaded.</p>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-  {files.map((file) => {
-    const type = getFileType(file.name);
-    const handleDelete = async () => {
-      const res = await fetch(`/api/beacons/files/delete/${file.id}`, {
-        method: 'DELETE',
-      });
+                    {files.map((file) => {
+                      const type = getFileType(file.name);
+                      const handleDelete = async () => {
+                        const res = await fetch(
+                          `/api/beacons/files/delete/${file.id}`,
+                          {
+                            method: 'DELETE',
+                          }
+                        );
 
-      if (res.ok) {
-        toast.success(`Deleted ${file.name}`);
-        setFiles((prev) => prev.filter((f) => f.id !== file.id));
-      } else {
-        toast.error('Failed to delete file');
-      }
-    };
+                        if (res.ok) {
+                          toast.success(`Deleted ${file.name}`);
+                          setFiles((prev) =>
+                            prev.filter((f) => f.id !== file.id)
+                          );
+                        } else {
+                          toast.error('Failed to delete file');
+                        }
+                      };
 
-    return (
-      <Card key={file.id} className="relative rounded-md border shadow-sm">
-        <button
-          onClick={handleDelete}
-          className="absolute top-1 right-1 z-10 text-red-500 hover:text-red-700"
-          aria-label={`Delete ${file.name}`}
-        >
-          <TrashIcon className="h-4 w-4" />
-        </button>
-        <CardContent className="p-2 space-y-2">
-          <div className="text-xs truncate text-muted-foreground font-medium">
-            {file.name}
-          </div>
-          {type === 'image' ? (
-            <img src={file.path} alt={file.name} className="rounded w-full h-28 object-contain" />
-          ) : type === 'video' ? (
-            <video
-              src={file.path}
-              controls
-              className="rounded w-full h-28 object-contain"
-            />
-          ) : (
-            <a
-              href={file.path}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-blue-600 underline"
-            >
-              Open document
-            </a>
-          )}
-        </CardContent>
-      </Card>
-    );
-  })}
-</div>
-
-
+                      return (
+                        <Card
+                          key={file.id}
+                          className="relative rounded-md border shadow-sm"
+                        >
+                          <button
+                            onClick={handleDelete}
+                            className="absolute top-1 right-1 z-10 text-red-500 hover:text-red-700"
+                            aria-label={`Delete ${file.name}`}
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
+                          <CardContent className="p-2 space-y-2">
+                            <div className="text-xs truncate text-muted-foreground font-medium">
+                              {file.name}
+                            </div>
+                            {type === 'image' ? (
+                              <img
+                                src={file.path}
+                                alt={file.name}
+                                className="rounded w-full h-28 object-contain"
+                              />
+                            ) : type === 'video' ? (
+                              <video
+                                src={file.path}
+                                controls
+                                className="rounded w-full h-28 object-contain"
+                              />
+                            ) : (
+                              <a
+                                href={file.path}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-600 underline"
+                              >
+                                Open document
+                              </a>
+                            )}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
             </>

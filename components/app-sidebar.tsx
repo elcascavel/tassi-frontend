@@ -1,12 +1,10 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import {
-  IconWheelchair,
-} from "@tabler/icons-react"
+import * as React from 'react';
+import { IconWheelchair } from '@tabler/icons-react';
 
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from '@/components/nav-main';
+import { NavUser } from '@/components/nav-user';
 import {
   Sidebar,
   SidebarContent,
@@ -15,20 +13,20 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from '@/components/ui/sidebar';
 
-import { useUser } from "@auth0/nextjs-auth0/client"
-import { navMain } from "@/lib/routeMap"
-import Link from "next/link"
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { navMain } from '@/lib/routeMap';
+import Link from 'next/link';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useUser()
+  const { user } = useUser();
 
   const navUser = {
-    name: user?.name ?? "Loading...",
-    username: user?.nickname ?? "Loading...",
-    avatar: user?.picture ?? "/avatars/default.jpg",
-  }
+    name: user?.name ?? 'Loading...',
+    username: user?.nickname ?? 'Loading...',
+    avatar: user?.picture ?? '/avatars/default.jpg',
+  };
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -54,5 +52,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser user={navUser} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

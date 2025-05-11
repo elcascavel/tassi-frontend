@@ -68,7 +68,10 @@ export default function Page() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [beaconToEdit, setBeaconToEdit] = useState<Beacon | null>(null);
 
-  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('beacons', 'beacon_id');
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal(
+    'beacons',
+    'beacon_id'
+  );
 
   const [editFields, setEditFields] = useState({
     name: '',
@@ -179,19 +182,18 @@ export default function Page() {
   };
 
   const handleDelete = async (id: number) => {
-  const res = await fetch(`/api/beacons/delete/${id}`, {
-    method: 'DELETE',
-  });
+    const res = await fetch(`/api/beacons/delete/${id}`, {
+      method: 'DELETE',
+    });
 
-  if (res.ok) {
-    setBeacons((prev) => prev.filter((b) => b.id !== id));
-    toast.success(`Beacon #${id} deleted.`);
-  } else {
-    console.error('Failed to delete beacon');
-    toast.error('Failed to delete beacon.');
-  }
-};
-
+    if (res.ok) {
+      setBeacons((prev) => prev.filter((b) => b.id !== id));
+      toast.success(`Beacon #${id} deleted.`);
+    } else {
+      console.error('Failed to delete beacon');
+      toast.error('Failed to delete beacon.');
+    }
+  };
 
   const beaconColumns: ColumnDef<Beacon>[] = [
     { accessorKey: 'id', header: 'ID' },
@@ -245,22 +247,24 @@ export default function Page() {
             <PencilIcon className="w-4 h-4" />
           </Button>
           <Button
-  onClick={() => openTranslationModal(row.original.id)}
-  variant="ghost"
-  size="icon"
->
-  <GlobeIcon className="w-4 h-4" />
-</Button>
+            onClick={() => openTranslationModal(row.original.id)}
+            variant="ghost"
+            size="icon"
+          >
+            <GlobeIcon className="w-4 h-4" />
+          </Button>
 
           <Button
-        onClick={() => handleDelete(row.original.id)}
-        variant="ghost"
-        size="icon"
-        aria-label="Delete"
-      >
-        <span className="text-red-500"><IconTrash className="w-4 h-4" /></span>
-      </Button>
-    </div>
+            onClick={() => handleDelete(row.original.id)}
+            variant="ghost"
+            size="icon"
+            aria-label="Delete"
+          >
+            <span className="text-red-500">
+              <IconTrash className="w-4 h-4" />
+            </span>
+          </Button>
+        </div>
       ),
     },
   ];
@@ -542,7 +546,7 @@ export default function Page() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-<TranslationModalWrapper />
+      <TranslationModalWrapper />
     </SidebarProvider>
   );
 }

@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -8,14 +8,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from '@/components/ui/table';
 
 interface DataTableSkeletonProps {
-  columnCount?: number
-  rowCount?: number
+  columnCount?: number;
+  rowCount?: number;
 }
 
-export function DataTableSkeleton({ columnCount = 5, rowCount = 4 }: DataTableSkeletonProps) {
+export function DataTableSkeleton({
+  columnCount = 5,
+  rowCount = 4,
+}: DataTableSkeletonProps) {
   return (
     <div className="rounded-md border m-5 shadow-sm overflow-hidden">
       <Table>
@@ -41,5 +44,5 @@ export function DataTableSkeleton({ columnCount = 5, rowCount = 4 }: DataTableSk
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

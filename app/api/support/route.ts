@@ -1,19 +1,24 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const res = await fetch(`${process.env.API_URL}/support/tickets?code=${process.env.FUNCTION_KEY}`)
+    const res = await fetch(
+      `${process.env.API_URL}/support/tickets?code=${process.env.FUNCTION_KEY}`
+    );
 
-    const text = await res.text() 
+    const text = await res.text();
 
-    const json = JSON.parse(text)
+    const json = JSON.parse(text);
 
-    return NextResponse.json(json)
+    return NextResponse.json(json);
   } catch (error) {
-    console.error('Proxy error:', error)
+    console.error('Proxy error:', error);
     return NextResponse.json(
-      { message: 'Internal Server Error', error: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        message: 'Internal Server Error',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
-    )
+    );
   }
 }

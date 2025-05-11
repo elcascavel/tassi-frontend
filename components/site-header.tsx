@@ -1,12 +1,12 @@
-"use client"
+'use client';
 
-import { usePathname } from "next/navigation"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
-import { routeMap } from "@/lib/routeMap"
+import { usePathname } from 'next/navigation';
+import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { routeMap } from '@/lib/routeMap';
 
 export function SiteHeader({ title }: { title?: string }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const pageTitle = routeMap[pathname] || 'Untitled';
 
@@ -25,5 +25,5 @@ export function SiteHeader({ title }: { title?: string }) {
         )}
       </div>
     </header>
-  )
+  );
 }

@@ -56,7 +56,10 @@ export default function Page() {
 
   const [toDelete, setToDelete] = useState<Map | null>(null);
 
-  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('maps', 'map_id');
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal(
+    'maps',
+    'map_id'
+  );
 
   type Map = {
     id: number;
@@ -163,7 +166,9 @@ export default function Page() {
               >
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => openTranslationModal(row.original.id)}>
+              <DropdownMenuItem
+                onClick={() => openTranslationModal(row.original.id)}
+              >
                 Translate
               </DropdownMenuItem>
               <DropdownMenuItem

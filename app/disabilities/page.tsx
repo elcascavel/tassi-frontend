@@ -54,7 +54,10 @@ export default function Page() {
 
   const [toDel, setDel] = useState<Disability | null>(null);
 
-  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('disabilities', 'disability_id');
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal(
+    'disabilities',
+    'disability_id'
+  );
 
   type Disability = {
     id: number;
@@ -138,7 +141,9 @@ export default function Page() {
             >
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => openTranslationModal(row.original.id)}>
+            <DropdownMenuItem
+              onClick={() => openTranslationModal(row.original.id)}
+            >
               Translate
             </DropdownMenuItem>
             <DropdownMenuItem
