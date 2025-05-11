@@ -18,7 +18,10 @@ export async function POST(req: NextRequest) {
     const contentType = res.headers.get('content-type') ?? '';
 
     if (!rawText.trim()) {
-      return NextResponse.json({ message: 'Empty response from backend' }, { status: 502 });
+      return NextResponse.json(
+        { message: 'Empty response from backend' },
+        { status: 502 }
+      );
     }
 
     if (contentType.includes('application/json')) {
@@ -26,11 +29,17 @@ export async function POST(req: NextRequest) {
         const json = JSON.parse(rawText);
         return NextResponse.json(json, { status: res.status });
       } catch {
-        return NextResponse.json({ message: 'Invalid JSON from backend', raw: rawText }, { status: 502 });
+        return NextResponse.json(
+          { message: 'Invalid JSON from backend', raw: rawText },
+          { status: 502 }
+        );
       }
     }
 
-    return NextResponse.json({ message: 'Non-JSON response', raw: rawText }, { status: res.status });
+    return NextResponse.json(
+      { message: 'Non-JSON response', raw: rawText },
+      { status: res.status }
+    );
   } catch (error) {
     console.error('Proxy error:', error);
     return NextResponse.json(

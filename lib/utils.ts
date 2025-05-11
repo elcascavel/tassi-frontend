@@ -1,20 +1,21 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export function getStatusVariant(statusName: string): "default" | "secondary" | "destructive" | "outline" {
+export function getStatusVariant(
+  statusName: string
+): 'default' | 'secondary' | 'destructive' | 'outline' {
   switch (statusName.toLowerCase()) {
-    case "online":
-      return "default"
-    case "offline":
-      return "secondary"
-    case "blocked":
-      return "destructive"
+    case 'online':
+      return 'default';
+    case 'offline':
+      return 'secondary';
+    case 'blocked':
+      return 'destructive';
     default:
-      return "outline"
+      return 'outline';
   }
 }
-

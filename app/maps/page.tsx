@@ -56,7 +56,10 @@ export default function Page() {
 
   const [toDelete, setToDelete] = useState<Map | null>(null);
 
-  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal('maps', 'map_id');
+  const { openTranslationModal, TranslationModalWrapper } = useTranslationModal(
+    'maps',
+    'map_id'
+  );
 
   type Map = {
     id: number;
@@ -83,7 +86,7 @@ export default function Page() {
     formData.append('enabled', String(enabled));
     if (file) formData.append('image', file);
 
-    if (editing              ) {
+    if (editing) {
       const res = await fetch(`/api/maps/update/${editing.id}`, {
         method: 'PUT',
         body: formData,
@@ -163,7 +166,9 @@ export default function Page() {
               >
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => openTranslationModal(row.original.id)}>
+              <DropdownMenuItem
+                onClick={() => openTranslationModal(row.original.id)}
+              >
                 Translate
               </DropdownMenuItem>
               <DropdownMenuItem

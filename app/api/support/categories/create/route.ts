@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,8 +7,8 @@ export async function POST(req: NextRequest) {
     const res = await fetch(
       `${process.env.API_URL}/support/categories/create?code=${process.env.FUNCTION_KEY}`,
       {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body,
       }
     );
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(json, { status: res.status });
   } catch (e) {
     return NextResponse.json(
-      { message: "Proxy error", error: String(e) },
+      { message: 'Proxy error', error: String(e) },
       { status: 500 }
     );
   }

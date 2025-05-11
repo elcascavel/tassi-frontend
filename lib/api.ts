@@ -17,9 +17,7 @@ export async function apiRequest<T>(
       const errorData = await response.json();
       console.log(errorData);
       errorMessage = errorData || errorMessage;
-    } catch {
-      
-    }
+    } catch {}
     throw new Error(errorMessage);
   }
 

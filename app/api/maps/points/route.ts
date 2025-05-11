@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
@@ -6,8 +6,8 @@ export async function GET() {
       `${process.env.API_URL}/maps/points?code=${process.env.FUNCTION_KEY}`
     );
 
-    const contentType = res.headers.get("content-type");
-    if (contentType?.includes("application/json")) {
+    const contentType = res.headers.get('content-type');
+    if (contentType?.includes('application/json')) {
       const json = await res.json();
       return NextResponse.json(json, { status: res.status });
     }
@@ -15,9 +15,9 @@ export async function GET() {
     const text = await res.text();
     return new NextResponse(text, { status: res.status });
   } catch (err) {
-    console.error("Error in maps/points GET route:", err);
+    console.error('Error in maps/points GET route:', err);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: 'Internal Server Error' },
       { status: 500 }
     );
   }
